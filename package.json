@@ -1,0 +1,24 @@
+{
+  "name": "obsidian-superscript",
+  "version": "0.1.0",
+  "description": "Superscript comic script plugin for Obsidian",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/machindo/obsidian-superscript.git"
+  },
+  "keywords": [
+    "superscript",
+    "obsidian",
+    "plugin"
+  ],
+  "author": "Justin Paul Silva",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/machindo/obsidian-superscript/issues"
+  },
+  "homepage": "https://github.com/machindo/obsidian-superscript#readme"
+}
