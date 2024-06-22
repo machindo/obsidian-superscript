@@ -2,8 +2,11 @@
   "name": "obsidian-superscript",
   "version": "0.1.0",
   "description": "Superscript comic script plugin for Obsidian",
-  "main": "dist/index.js",
+  "main": "main.js",
   "scripts": {
+    "dev": "tsup --watch src",
+    "build": "tsup",
+    "lint": "eslint .",
     "test": "vitest"
   },
   "repository": {
@@ -20,5 +23,16 @@
   "bugs": {
     "url": "https://github.com/machindo/obsidian-superscript/issues"
   },
-  "homepage": "https://github.com/machindo/obsidian-superscript#readme"
+  "homepage": "https://github.com/machindo/obsidian-superscript#readme",
+  "devDependencies": {
+    "@eslint/js": "^8.57.0",
+    "codemirror": "^6.0.1",
+    "eslint": "^8.57.0",
+    "globals": "^15.6.0",
+    "obsidian": "^1.5.7-1",
+    "tsup": "^8.1.0",
+    "typescript": "^5.5.2",
+    "typescript-eslint": "^7.13.1",
+    "vitest": "^1.6.0"
+  }
 }

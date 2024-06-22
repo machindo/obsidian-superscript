@@ -1,0 +1,11 @@
+{
+	"id": "superscript-plugin",
+	"name": "Superscript Plugin",
+	"version": "0.1.0",
+	"minAppVersion": "0.15.0",
+	"description": "Superscript comic book script format plugin for Obsidian.",
+	"author": "Justin Paul Silva",
+	"authorUrl": "https://obsidian.md",
+	"fundingUrl": "https://obsidian.md/pricing",
+	"isDesktopOnly": false
+}
