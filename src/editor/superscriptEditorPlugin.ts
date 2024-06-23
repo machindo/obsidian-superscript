@@ -1,4 +1,5 @@
 import { DecorationSet, EditorView, PluginSpec, PluginValue, ViewPlugin, ViewUpdate } from '@codemirror/view';
+import { buildDecorations } from './buildDecorations';
 
 class SuperscriptEditorPlugin implements PluginValue {
     decorations: DecorationSet;

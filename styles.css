@@ -1,0 +1,23 @@
+.cm-superscript-page-heading {
+    text-transform: uppercase;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.cm-superscript-panel-heading {
+    text-transform: lowercase;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.cm-superscript-panel-heading::first-letter {
+    text-transform: uppercase;
+}
+
+.cm-superscript-character {
+    text-decoration: underline;
+}
+
+.cm-superscript-dialogue::before {
+    content: '    ';
+}

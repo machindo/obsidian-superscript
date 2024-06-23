@@ -4,7 +4,7 @@
   "description": "Superscript comic script plugin for Obsidian",
   "main": "main.js",
   "scripts": {
-    "dev": "tsup --watch src",
+    "dev": "nodemon -e css,ts -w src -x tsup",
     "build": "tsup",
     "lint": "eslint .",
     "test": "vitest"
