@@ -27,10 +27,6 @@ const getLineFormat = (
                 } else {
                     break;
                 }
-            } else if (id === tokenNames.pageHeading) {
-                state.pageNumber++;
-            } else if (id === tokenNames.panelHeading) {
-                state.panelNumber++;
             }
 
             return id;
@@ -57,7 +53,7 @@ function isSuperscriptEnabled(view: EditorView) {
     }
 }
 
-export const  buildDecorations = (view: EditorView): DecorationSet => {
+export const buildDecorations = (view: EditorView): DecorationSet => {
     const builder = new RangeSetBuilder<Decoration>();
 
     if (!isSuperscriptEnabled(view)) return builder.finish();
@@ -70,8 +66,6 @@ export const  buildDecorations = (view: EditorView): DecorationSet => {
 
     const state: SuperscriptState = {
         inDialogue: false,
-        pageNumber: 0,
-        panelNumber: 0,
     };
 
     for (const { from, to } of view.visibleRanges) {
@@ -123,22 +117,6 @@ export const  buildDecorations = (view: EditorView): DecorationSet => {
                     const charExtLength = charExt[0].length;
                     const charExtStart = lTo - charExtLength;
                     markDeco(charExtStart, lTo, "cm-fountain-character-extension");
-                }
-            } else if (token === tokenNames.pageHeading) {
-                const expectedText = `PAGE ${state.pageNumber}`;
-
-                if (lText !== expectedText) {
-                    view.state.doc.replace(lFrom, lTo, Text.of([expectedText]))
-                    console.log('replaced', lText, 'with', expectedText)
-                    // TODO apply char count diff to pos
-                }
-            } else if (token === tokenNames.panelHeading) {
-                const expectedText = `Panel ${state.panelNumber}`;
-
-                if (lText !== expectedText) {
-                    view.state.doc.replace(lFrom, lTo, Text.of([expectedText]))
-                    console.log('replaced', lText, 'with', expectedText)
-                    // TODO apply char count diff to pos
                 }
             }
 

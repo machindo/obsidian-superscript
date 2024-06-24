@@ -1,10 +1,12 @@
 import { Prec } from '@codemirror/state';
 import { Plugin } from 'obsidian';
-import { superscriptEditorPlugin } from './editor/superscriptEditorPlugin';
+import { autonumberHeadings } from './editor/autonumberHeadings';
+import { superscriptViewPlugin } from './editor/superscriptViewPlugin';
 
 export default class SuperscriptPlugin extends Plugin {
 	async onload() {
-		this.registerEditorExtension(Prec.lowest(superscriptEditorPlugin));
+		this.registerEditorExtension(Prec.lowest(superscriptViewPlugin));
+		this.registerEvent(this.app.workspace.on('editor-change', autonumberHeadings));
 	}
 
 	onunload() {

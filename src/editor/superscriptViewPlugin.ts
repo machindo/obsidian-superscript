@@ -1,7 +1,7 @@
 import { DecorationSet, EditorView, PluginSpec, PluginValue, ViewPlugin, ViewUpdate } from '@codemirror/view';
 import { buildDecorations } from './buildDecorations';
 
-class SuperscriptEditorPlugin implements PluginValue {
+class SuperscriptPluginValue implements PluginValue {
     decorations: DecorationSet;
 
     constructor(view: EditorView) {
@@ -17,8 +17,8 @@ class SuperscriptEditorPlugin implements PluginValue {
     destroy() { }
 }
 
-const pluginSpec: PluginSpec<SuperscriptEditorPlugin> = {
-    decorations: (value: SuperscriptEditorPlugin) => value.decorations,
+const pluginSpec: PluginSpec<SuperscriptPluginValue> = {
+    decorations: (value: SuperscriptPluginValue) => value.decorations,
 };
 
-export const superscriptEditorPlugin = ViewPlugin.fromClass(SuperscriptEditorPlugin, pluginSpec);
+export const superscriptViewPlugin = ViewPlugin.fromClass(SuperscriptPluginValue, pluginSpec);

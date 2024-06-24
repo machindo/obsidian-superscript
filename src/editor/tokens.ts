@@ -6,15 +6,19 @@ export const tokenNames = {
     action: 'action'
 } as const;
 
+export const pageHeadingToken = {
+    id: tokenNames.pageHeading,
+    regex: /^Page \d+$/i,
+} as const
+
+export const panelHeadingToken = {
+    id: tokenNames.panelHeading,
+    regex: /^Panel \d+$/i,
+} as const
+
 export const lineTokens = [
-    {
-        id: tokenNames.pageHeading,
-        regex: /^Page \d+$/i,
-    },
-    {
-        id: tokenNames.panelHeading,
-        regex: /^Panel \d+$/i,
-    },
+    pageHeadingToken,
+    panelHeadingToken,
     {
         id: tokenNames.character,
         regex: /^[^\S\r\n]*(?=.*[A-Z\u00C0-\u00DEF])[A-Z0-9\u00C0-\u00DEF \t'.-]+\s?(\(.*\))?$|@.*$/,
