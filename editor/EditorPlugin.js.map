@@ -1,1 +1,0 @@
-{"version":3,"sources":["../src/editor/EditorPlugin.ts"],"sourcesContent":["import { EditorValue } from 'codemirror';\n\nexport class EditorPlugin implements EditorValue {\n\n}\n"],"mappings":";;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAEO,IAAM,eAAN,MAA0C;AAEjD;","names":[]}

@@ -1,4 +1,4 @@
-import { RangeSetBuilder, Text } from "@codemirror/state";
+import { RangeSetBuilder } from "@codemirror/state";
 import { Decoration, DecorationSet, EditorView } from "@codemirror/view";
 import { editorInfoField } from "obsidian";
 import { SuperscriptContext } from "./SuperscriptContext";
@@ -12,10 +12,11 @@ const getLineFormat = (
     state: SuperscriptState,
     ctx: SuperscriptContext,
 ) => {
-    if (!line.trim()) {
+    if (line.trim() === '') {
         // at least two spaces to be considered
         // https://fountain.io/syntax#line-breaks
         if (line.length < 2) state.inDialogue = false;
+
         return null;
     }
 
@@ -116,7 +117,7 @@ export const buildDecorations = (view: EditorView): DecorationSet => {
                     }
                     const charExtLength = charExt[0].length;
                     const charExtStart = lTo - charExtLength;
-                    markDeco(charExtStart, lTo, "cm-fountain-character-extension");
+                    markDeco(charExtStart, lTo, "cm-superscript-character-extension");
                 }
             }
 
