@@ -2,23 +2,23 @@ import { DecorationSet, EditorView, PluginSpec, PluginValue, ViewPlugin, ViewUpd
 import { buildDecorations } from './buildDecorations';
 
 class SuperscriptPluginValue implements PluginValue {
-    decorations: DecorationSet;
+  decorations: DecorationSet;
 
-    constructor(view: EditorView) {
-        this.decorations = buildDecorations(view);
+  constructor(view: EditorView) {
+    this.decorations = buildDecorations(view);
+  }
+
+  update(update: ViewUpdate) {
+    if (update.docChanged || update.viewportChanged) {
+      this.decorations = buildDecorations(update.view);
     }
+  }
 
-    update(update: ViewUpdate) {
-        if (update.docChanged || update.viewportChanged) {
-            this.decorations = buildDecorations(update.view);
-        }
-    }
-
-    destroy() { }
+  destroy() { }
 }
 
 const pluginSpec: PluginSpec<SuperscriptPluginValue> = {
-    decorations: (value: SuperscriptPluginValue) => value.decorations,
+  decorations: (value: SuperscriptPluginValue) => value.decorations,
 };
 
 export const superscriptViewPlugin = ViewPlugin.fromClass(SuperscriptPluginValue, pluginSpec);

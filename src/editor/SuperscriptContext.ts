@@ -1,5 +1,5 @@
 export type SuperscriptContext = {
-    afterEmptyLine: boolean;
-    beforeEmptyLine: boolean;
-    isLastLine: boolean;
+  afterEmptyLine: boolean;
+  beforeEmptyLine: boolean;
+  isLastLine: boolean;
 }

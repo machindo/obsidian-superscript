@@ -1,32 +1,35 @@
-import { Editor } from "obsidian";
+import { Editor, MarkdownFileInfo, MarkdownView } from "obsidian";
 import { pageHeadingToken, panelHeadingToken } from "./tokens";
+import { isSuperscriptEnabled } from "./isSuperscriptEnabled";
 
-export const autonumberHeadings = (editor: Editor) => {
-    let pageNumber = 0;
-    let panelNumber = 0;
+export const autonumberHeadings = (editor: Editor, info: MarkdownFileInfo | MarkdownView) => {
+  if (!isSuperscriptEnabled(info)) return;
 
-    for (let line = 0; line < editor.lastLine(); line++) {
-        const text = editor.getLine(line);
+  let pageNumber = 0;
+  let panelNumber = 0;
 
-        if (pageHeadingToken.regex.test(text)) {
-            pageNumber++;
-            panelNumber = 0;
+  for (let line = 0; line < editor.lastLine(); line++) {
+    const text = editor.getLine(line);
+    const pageHeadingMatches = pageHeadingToken.regex.exec(text)
+    const panelHeadingMatches = panelHeadingToken.regex.exec(text)
 
-            const expectedText = `PAGE ${pageNumber}`;
+    if (pageHeadingMatches) {
+      pageNumber++;
+      panelNumber = 0;
 
-            if (text !== expectedText) {
-                editor.replaceRange(expectedText, { line, ch: 0 }, { line, ch: text.length })
-                console.log('replaced', text, 'with', expectedText)
-            }
-        } else if (panelHeadingToken.regex.test(text)) {
-            panelNumber++;
+      const matchingPageNumber = pageHeadingMatches[2];
 
-            const expectedText = `Panel ${panelNumber}`;
+      if (parseInt(matchingPageNumber) !== pageNumber) {
+        editor.replaceRange(pageNumber.toString(10), { line, ch: pageHeadingMatches[1].length + 1 }, { line, ch: text.length })
+      }
+    } else if (panelHeadingMatches) {
+      panelNumber++;
 
-            if (text !== expectedText) {
-                editor.replaceRange(expectedText, { line, ch: 0 }, { line, ch: text.length })
-                console.log('replaced', text, 'with', expectedText)
-            }
-        }
+      const matchingPanelNumber = panelHeadingMatches[2];
+
+      if (parseInt(matchingPanelNumber) !== panelNumber) {
+        editor.replaceRange(panelNumber.toString(10), { line, ch: panelHeadingMatches[1].length + 1 }, { line, ch: text.length })
+      }
     }
+  }
 }

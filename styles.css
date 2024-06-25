@@ -4,6 +4,26 @@
     font-weight: bold;
 }
 
+.cm-superscript-page-heading-parity {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.cm-superscript-page-heading-parity-even .page-left {
+    fill: currentColor;
+}
+
+.cm-superscript-page-heading-parity-odd .page-right {
+    fill: currentColor;
+}
+
 .cm-superscript-panel-heading {
     text-transform: lowercase;
     font-size: 20px;
