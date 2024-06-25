@@ -6,7 +6,7 @@
   &::before {
     content: '';
     position: absolute;
-    inset: calc(var(--size-4-2) * -1) calc(var(--size-4-4) * -1) var(--size-4-4) !important;
+    inset: calc(var(--size-4-2) * -1) calc(var(--size-4-4) * -1) 0;
     border-inline: solid var(--border-width) var(--background-modifier-border);
     border-block-start: solid var(--border-width) var(--background-modifier-border);
     border-start-start-radius: var(--radius-s);
@@ -22,11 +22,6 @@
 
   :has(+ &) {
     height: calc(var(--line-height-normal) * 1lh + var(--size-4-2));
-  }
-
-  &~:not(&):has(+ &),
-  &~:last-child {
-    height: calc(var(--line-height-normal) * 1lh + var(--size-4-4));
   }
 
   &~:has(+ &),
@@ -45,8 +40,14 @@
     }
   }
 
+  &~:not(&):has(+ &),
+  &~:not(&):last-child {
+    height: calc(var(--line-height-normal) * 1lh + var(--size-4-4));
+  }
+
+  &~&:has(+ &)::before,
   &~:last-child::before {
-    bottom: 0;
+    inset: calc(var(--size-4-2) * -1) calc(var(--size-4-4) * -1) var(--size-4-4);
   }
 }
 
@@ -60,6 +61,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--text-faint);
   pointer-events: none;
 
   &-left .svg-icon-page-left {
@@ -82,7 +84,6 @@
 }
 
 .cm-superscript-character {
-  text-align: center;
   text-decoration: underline;
 }
 
@@ -100,4 +101,5 @@
   font-weight: var(--font-normal);
   color: var(--text-faint);
   pointer-events: none;
+  text-transform: none;
 }
