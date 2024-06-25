@@ -1,43 +1,94 @@
 .cm-superscript-page-heading {
-    text-transform: uppercase;
-    font-size: 24px;
-    font-weight: bold;
+  text-transform: uppercase;
+  font-size: var(--h2-size);
+  font-weight: bold;
+}
+
+.cm-superscript-page-heading::before {
+  content: '';
+  position: absolute;
+  inset: calc(var(--size-4-2) * -1) calc(var(--size-4-4) * -1) 0;
+  border-inline: solid var(--border-width) var(--background-modifier-border);
+  border-block-start: solid var(--border-width) var(--background-modifier-border);
+  border-start-start-radius: var(--radius-s);
+  border-start-end-radius: var(--radius-s);
+}
+
+.cm-superscript-page-heading~*:not(.cm-superscript-page-heading)::before {
+  content: '';
+  position: absolute;
+  inset: 0 calc(var(--size-4-4) * -1);
+  border-inline: solid var(--border-width) var(--background-modifier-border);
+}
+
+*:has(+ .cm-superscript-page-heading) {
+  height: calc(var(--line-height-normal) * 1lh + var(--size-4-2));
+}
+
+.cm-superscript-page-heading~*:not(.cm-superscript-page-heading):has(+ .cm-superscript-page-heading),
+.cm-superscript-page-heading~*:last-child {
+  height: calc(var(--line-height-normal) * 1lh + var(--size-4-4));
+}
+
+.cm-superscript-page-heading~*:has(+ .cm-superscript-page-heading)::before,
+.cm-superscript-page-heading~*:last-child::before {
+  content: '';
+  position: absolute;
+  inset: 0 calc(var(--size-4-4) * -1) var(--size-4-4);
+  height: var(--line-height-normal)px;
+  border-inline: solid var(--border-width) var(--background-modifier-border);
+  border-block-end: solid var(--border-width) var(--background-modifier-border);
+  border-end-start-radius: var(--radius-s);
+  border-end-end-radius: var(--radius-s);
 }
 
 .cm-superscript-page-heading-parity {
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: 100%;
-    aspect-ratio: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
 }
 
-.cm-superscript-page-heading-parity-even .page-left {
-    fill: currentColor;
+.cm-superscript-page-heading-parity-left .svg-icon-page-left {
+  fill: currentColor;
 }
 
-.cm-superscript-page-heading-parity-odd .page-right {
-    fill: currentColor;
+.cm-superscript-page-heading-parity-right .svg-icon-page-right {
+  fill: currentColor;
 }
 
 .cm-superscript-panel-heading {
-    text-transform: lowercase;
-    font-size: 20px;
-    font-weight: bold;
+  text-transform: lowercase;
+  font-size: var(--h3-size);
+  font-weight: bold;
 }
 
 .cm-superscript-panel-heading::first-letter {
-    text-transform: uppercase;
+  text-transform: uppercase;
 }
 
 .cm-superscript-character {
-    text-decoration: underline;
+  text-decoration: underline;
+  text-decoration: underline;
 }
 
 .cm-superscript-dialogue::before {
-    content: '    ';
+  content: '    ';
+}
+
+.cm-superscript-word-count {
+  display: inline;
+  margin-inline-start: var(--size-4-2);
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  font-size: var(--font-ui-smaller);
+  font-weight: var(--font-normal);
+  color: var(--text-faint);
+  pointer-events: none;
 }

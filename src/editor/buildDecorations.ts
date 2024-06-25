@@ -1,13 +1,23 @@
 import { RangeSetBuilder } from "@codemirror/state";
 import { Decoration, DecorationSet, EditorView } from "@codemirror/view";
+import { A, D } from "@mobily/ts-belt";
+import { create } from 'mutative';
 import { editorInfoField } from "obsidian";
 import { PageHeadingParityWidget } from "./PageHeadingParityWidget";
 import { SuperscriptContext } from "./SuperscriptContext";
 import { SuperscriptState } from "./SuperscriptState";
+import { WordCountWidget } from "./WordCountWidget";
+import { getOddPageSide } from "./getOddPageSide";
 import { isSuperscriptEnabled } from "./isSuperscriptEnabled";
 import { TokenName, lineTokens, tokenNames } from "./tokens";
 
 const composeClass = (token: string) => `cm-formatting cm-superscript-formatting-${token}`;
+
+const countWords = (text: string) => {
+  const words = text.match(/\S+/g);
+
+  return words?.length ?? 0;
+};
 
 const getLineFormat = (
   line: string,
@@ -21,9 +31,7 @@ const getLineFormat = (
   if (line.trim() === '') {
     // at least two spaces to be considered
     // https://fountain.io/syntax#line-breaks
-    if (line.length < 2) state.inDialogue = false;
-
-    return line.length < 2 ? { state: { inDialogue: false } } : { state };
+    return line.length < 2 ? { state: { ...state, inDialogue: false } } : { state };
   }
 
   for (const { id: token, regex: tRegex } of lineTokens) {
@@ -32,7 +40,7 @@ const getLineFormat = (
     if (matches) {
       if (token === tokenNames.character) {
         if (ctx.afterEmptyLine && !ctx.beforeEmptyLine && !ctx.isLastLine) {
-          return { matches, token, state: { inDialogue: true } };
+          return { matches, token, state: { ...state, inDialogue: true } };
         } else {
           break;
         }
@@ -43,7 +51,22 @@ const getLineFormat = (
   }
 
   if (state.inDialogue) {
-    return { token: tokenNames.dialogue, state };
+    return {
+      token: tokenNames.dialogue,
+      state: create(state, (draft) => {
+        if (draft.characters.length > 0) {
+          draft.characters[draft.characters.length - 1].wordCount += countWords(line);
+        }
+
+        if (draft.panelHeadings.length > 0) {
+          draft.panelHeadings[draft.panelHeadings.length - 1].wordCount += countWords(line);
+        }
+
+        if (draft.pageHeadings.length > 0) {
+          draft.pageHeadings[draft.pageHeadings.length - 1].wordCount += countWords(line);
+        }
+      }),
+    };
   }
 
   return { token: tokenNames.action, state };
@@ -52,17 +75,21 @@ const getLineFormat = (
 export const buildDecorations = (view: EditorView): DecorationSet => {
   const builder = new RangeSetBuilder<Decoration>();
   const info = view.state.field(editorInfoField);
+  const decorations: { from: number, to: number, decoration: Decoration }[] = [];
 
   if (!isSuperscriptEnabled(info)) return builder.finish();
 
   const markDeco = (start: number, end: number, className: string) => {
-    const deco = Decoration.mark({ class: className });
+    const decoration = Decoration.mark({ class: className });
 
-    builder.add(start, end, deco);
+    decorations.push({ from: start, to: end, decoration });
   };
 
   let state: SuperscriptState = {
     inDialogue: false,
+    pageHeadings: [],
+    panelHeadings: [],
+    characters: [],
   };
 
   for (const { from, to } of view.visibleRanges) {
@@ -88,8 +115,9 @@ export const buildDecorations = (view: EditorView): DecorationSet => {
         continue;
       }
 
-      const deco = Decoration.line({ class: "cm-superscript-" + token });
-      builder.add(lFrom, lFrom, deco);
+      const decoration = Decoration.line({ class: "cm-superscript-" + token });
+
+      decorations.push({ from: lFrom, to: lFrom, decoration });
 
       // Mark Decorations
       const firstChar = lText[0];
@@ -102,9 +130,14 @@ export const buildDecorations = (view: EditorView): DecorationSet => {
           }
           break;
         case tokenNames.character: {
+          state = create(state, (draft) => {
+            draft.characters.push({ from: lFrom, to: lTo, wordCount: 0 });
+          });
+
           if (firstChar === "@") {
             markDeco(lFrom, lFrom + 1, composeClass(token));
           }
+
           if (lastChar === ")") {
             const charExt = lText.match(/(\(.*\))?$/g);
 
@@ -121,19 +154,56 @@ export const buildDecorations = (view: EditorView): DecorationSet => {
           break;
         }
         case tokenNames.pageHeading: {
+          state = create(state, (draft) => {
+            draft.pageHeadings.push({ from: lFrom, to: lTo, wordCount: 0 });
+          });
+
           if (!matches) break;
 
           const pageNumber = parseInt(matches[2]);
-          const deco = Decoration.widget({ widget: new PageHeadingParityWidget(pageNumber) });
+          const oddPageSide = getOddPageSide(view.state.field(editorInfoField));
+          const decoration = Decoration.widget({ widget: new PageHeadingParityWidget(pageNumber, oddPageSide) });
 
-          builder.add(lTo, lTo, deco);
+          decorations.push({ from: lTo, to: lTo, decoration });
 
           break;
         }
+        case tokenNames.panelHeading:
+          state = create(state, (draft) => {
+            draft.panelHeadings.push({ from: lFrom, to: lTo, wordCount: 0 });
+          });
+
+          break;
       }
 
       pos = lTo + 1;
     }
+  }
+
+  // TODO: continue word counting for each orphaned heading
+
+  for (const pageHeading of state.pageHeadings) {
+    const decoration = Decoration.widget({ widget: new WordCountWidget(pageHeading.wordCount) });
+
+    decorations.push({ from: pageHeading.to, to: pageHeading.to, decoration });
+  }
+
+  for (const panelHeading of state.panelHeadings) {
+    const decoration = Decoration.widget({ widget: new WordCountWidget(panelHeading.wordCount) });
+
+    decorations.push({ from: panelHeading.to, to: panelHeading.to, decoration });
+  }
+
+  for (const character of state.characters) {
+    const decoration = Decoration.widget({ widget: new WordCountWidget(character.wordCount) });
+
+    decorations.push({ from: character.to, to: character.to, decoration });
+  }
+
+  const sortedDecorations = A.sortBy(decorations, D.get('from'));
+
+  for (const { from, to, decoration } of sortedDecorations) {
+    builder.add(from, to, decoration);
   }
 
   return builder.finish();
