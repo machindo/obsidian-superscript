@@ -1,0 +1,100 @@
+.cm-superscript-page-heading {
+  text-transform: uppercase;
+  font-size: var(--h2-size);
+  font-weight: bold;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: calc(var(--size-4-2) * -1) calc(var(--size-4-4) * -1) 0;
+    border-inline: solid var(--border-width) var(--background-modifier-border);
+    border-block-start: solid var(--border-width) var(--background-modifier-border);
+    border-start-start-radius: var(--radius-s);
+    border-start-end-radius: var(--radius-s);
+  }
+
+  &~*:not(&)::before {
+    content: '';
+    position: absolute;
+    inset: 0 calc(var(--size-4-4) * -1);
+    border-inline: solid var(--border-width) var(--background-modifier-border);
+  }
+
+  *:has(+ .cm-superscript-page-heading) {
+    height: calc(var(--line-height-normal) * 1lh + var(--size-4-2));
+  }
+
+  &~*:not(&):has(+ &),
+  &~*:last-child {
+    height: calc(var(--line-height-normal) * 1lh + var(--size-4-4));
+  }
+
+  &:has(+ &),
+  &:last-child {
+    height: calc(var(--line-height-normal) * 1lh);
+  }
+
+  &~*:has(+ &)::before,
+  &~*:last-child::before {
+    content: '';
+    position: absolute;
+    inset: 0 calc(var(--size-4-4) * -1) var(--size-4-4);
+    height: var(--line-height-normal)px;
+    border-inline: solid var(--border-width) var(--background-modifier-border);
+    border-block-end: solid var(--border-width) var(--background-modifier-border);
+    border-end-start-radius: var(--radius-s);
+    border-end-end-radius: var(--radius-s);
+  }
+}
+
+
+.cm-superscript-page-heading-parity {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.cm-superscript-page-heading-parity-left .svg-icon-page-left {
+  fill: currentColor;
+}
+
+.cm-superscript-page-heading-parity-right .svg-icon-page-right {
+  fill: currentColor;
+}
+
+.cm-superscript-panel-heading {
+  text-transform: lowercase;
+  font-size: var(--h3-size);
+  font-weight: bold;
+}
+
+.cm-superscript-panel-heading::first-letter {
+  text-transform: uppercase;
+}
+
+.cm-superscript-character {
+  text-align: center;
+  text-decoration: underline;
+}
+
+.cm-superscript-dialogue::before {
+  content: '    ';
+}
+
+.cm-superscript-word-count {
+  display: inline;
+  margin-inline-start: var(--size-4-2);
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  font-size: var(--font-ui-smaller);
+  font-weight: var(--font-normal);
+  color: var(--text-faint);
+  pointer-events: none;
+}

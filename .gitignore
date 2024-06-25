@@ -132,3 +132,5 @@ dist
 # Output
 /main.js
 /main.js.map
+/styles.css
+/styles.css.map

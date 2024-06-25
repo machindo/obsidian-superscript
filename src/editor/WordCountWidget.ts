@@ -9,7 +9,7 @@ export class WordCountWidget extends WidgetType {
   toDOM() {
     const div = document.createElement("div");
     div.className = "cm-superscript-word-count";
-    div.innerHTML = `<span>${this.wordCount}</span>`;
+    div.innerHTML = `<span>${this.wordCount} ${this.wordCount === 1 ? "word" : "words"}</span>`;
 
     return div;
   }
