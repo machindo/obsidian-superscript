@@ -3,19 +3,19 @@ export const tokenNames = {
   panelHeading: 'panel-heading',
   character: 'character',
   dialogue: 'dialogue',
-  action: 'action'
-} as const;
+  action: 'action',
+} as const
 
-export type TokenName = typeof tokenNames[keyof typeof tokenNames];
+export type TokenName = typeof tokenNames[keyof typeof tokenNames]
 
 export const pageHeadingToken = {
   id: tokenNames.pageHeading,
-  regex: /^(PAGE) (\d+)$/i,
+  regex: /^(PAGE) (\d+)(?:-(\d+))?$/i,
 } as const
 
 export const panelHeadingToken = {
   id: tokenNames.panelHeading,
-  regex: /^(Panel) (\d+)$/i,
+  regex: /^(Panel) (\d+)(?:-(\d+))?$/i,
 } as const
 
 export const lineTokens = [
@@ -33,4 +33,4 @@ export const lineTokens = [
     id: tokenNames.action,
     regex: /^!.*$/,
   },
-] as const;
+] as const

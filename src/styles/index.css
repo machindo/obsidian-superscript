@@ -56,7 +56,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  width: 1lh;
+  width: max-content;
   height: 1lh;
   display: flex;
   align-items: center;
@@ -64,12 +64,9 @@
   color: var(--text-faint);
   pointer-events: none;
 
-  &-left .svg-icon-page-left {
-    fill: currentColor;
-  }
-
-  &-right .svg-icon-page-right {
-    fill: currentColor;
+  >svg.svg-icon {
+    width: auto;
+    stroke: var(--text-muted);
   }
 }
 
@@ -93,7 +90,10 @@
 
 .cm-superscript-word-count {
   display: inline;
-  margin-inline-start: var(--size-4-2);
+  position: absolute;
+  top: calc(50% - .5lh);
+  right: calc(100% + var(--size-4-6));
+  width: max-content;
   align-items: center;
   justify-content: center;
   pointer-events: none;

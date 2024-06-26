@@ -9,5 +9,5 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: false,
-  external: ["obsidian", "@codemirror/view", "@codemirror/state"],
+  external: ['obsidian', '@codemirror/view', '@codemirror/state'],
 })
