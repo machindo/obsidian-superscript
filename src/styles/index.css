@@ -68,6 +68,10 @@
     width: auto;
     stroke: var(--text-muted);
   }
+
+  >svg.svg-icon-rtl {
+    transform: scaleX(-1);
+  }
 }
 
 .cm-superscript-panel-heading {

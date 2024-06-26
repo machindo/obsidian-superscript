@@ -10,6 +10,7 @@ import { WordCountWidget } from './WordCountWidget'
 import { getOddPageSide } from './getOddPageSide'
 import { isSuperscriptEnabled } from './isSuperscriptEnabled'
 import { TokenName, lineTokens, tokenNames } from './tokens'
+import { getDirection } from './getDirection'
 
 const composeClass = (token: string) => `cm-formatting cm-superscript-formatting-${token}`
 
@@ -164,10 +165,11 @@ export const buildDecorations = (view: EditorView): DecorationSet => {
           const pageNumber = parseInt(matches[2])
           const additionalPageCount = matches[3] ? parseInt(matches[3]) - parseInt(matches[2]) : 0
           const oddPageSide = getOddPageSide(view.state.field(editorInfoField))
+          const direction = getDirection(view.state.field(editorInfoField))
           const decoration = Decoration.widget({
             widget: new PageHeadingParityWidget({
               additionalPageCount,
-              direction: 'ltr',
+              direction,
               oddPageSide,
               pageNumber,
             }),
