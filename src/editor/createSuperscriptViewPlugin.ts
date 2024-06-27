@@ -11,7 +11,7 @@ const createSuperscriptPluginValue = (plugin: SuperscriptPlugin) =>
     const pluginValue: SuperscriptPluginValue = {
       decorations: buildDecorations(view, plugin.settings),
       update: (update: ViewUpdate) => {
-        if (update.docChanged || update.viewportChanged) {
+        if (update.docChanged || update.viewportChanged || update.selectionSet) {
           pluginValue.decorations = buildDecorations(update.view, plugin.settings)
         }
       },

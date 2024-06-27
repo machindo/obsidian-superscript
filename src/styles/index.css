@@ -1,8 +1,12 @@
+/* Page heading */
+
 .cm-superscript-page-heading {
   text-transform: uppercase;
   font-size: var(--h2-size);
   font-weight: bold;
 }
+
+/* Page background */
 
 .cm-superscript-before-page-start {
   height: calc(var(--line-height-normal) * 1lh + var(--size-4-6));
@@ -59,6 +63,8 @@
   }
 }
 
+/* Page heading parity widget */
+
 .cm-superscript-page-heading-parity {
   position: absolute;
   top: 0;
@@ -81,6 +87,8 @@
   }
 }
 
+/* Panel heading */
+
 .cm-superscript-panel-heading {
   text-transform: lowercase;
   font-size: var(--h3-size);
@@ -91,13 +99,20 @@
   text-transform: uppercase;
 }
 
-.cm-superscript-character {
+/* Character */
+
+.markdown-source-view.mod-cm6 .cm-line.cm-superscript-character {
+  padding-inline-start: 2ch;
   text-decoration: underline;
 }
 
-.cm-superscript-dialogue::before {
-  content: '    ';
+/* Dialogue */
+
+.markdown-source-view.mod-cm6 .cm-line.cm-superscript-dialogue {
+  padding-inline-start: 2ch;
 }
+
+/* Word count widget */
 
 .cm-superscript-word-count {
   display: inline;
@@ -110,6 +125,15 @@
   pointer-events: none;
   font-size: var(--font-ui-smaller);
   font-weight: var(--font-normal);
+  color: var(--text-faint);
+  pointer-events: none;
+}
+
+/* Shortcut tip widget */
+
+.cm-superscript-shortcut-tip {
+  position: absolute;
+  padding-inline-start: 2ch;
   color: var(--text-faint);
   pointer-events: none;
 }

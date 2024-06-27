@@ -13,6 +13,7 @@ import { getDirection } from './getDirection'
 import { getOddPageSide } from './getOddPageSide'
 import { isSuperscriptEnabled } from './isSuperscriptEnabled'
 import { TokenName, lineTokens, pageHeadingToken, tokenNames } from './tokens'
+import { ShortcutTipWidget } from './ShortcutTipWidget'
 
 const mdPageHeadingLevelRegex = /^#{1,2} /
 
@@ -130,21 +131,19 @@ export const buildDecorations = (view: EditorView, settings: SuperscriptPluginSe
       const isPageEnd = state.inPage && (lTo >= to || pageHeadingLevelRegex.test(view.state.doc.lineAt(lTo + 1).text))
       const isBeforePageStart = !state.inPage && lTo < to && pageHeadingToken.regex.test(view.state.doc.lineAt(lTo + 1).text)
 
-      if (lText.toLocaleLowerCase() === 'page 10') {
-        console.log(state)
-      }
+      const decoration = token || state.inPage || isBeforePageStart
+        ? Decoration.line({
+          class: clsx(
+            token && `cm-superscript-${token}`,
+            token === 'page-heading' && 'cm-superscript-page-start',
+            state.inPage && token !== 'page-heading' && 'cm-superscript-page-body',
+            isPageEnd && 'cm-superscript-page-end',
+            isBeforePageStart && 'cm-superscript-before-page-start',
+          ),
+        })
+        : undefined
 
-      const decoration = Decoration.line({
-        class: clsx(
-          token && `cm-superscript-${token}`,
-          token === 'page-heading' && 'cm-superscript-page-start',
-          state.inPage && token !== 'page-heading' && 'cm-superscript-page-body',
-          isPageEnd && 'cm-superscript-page-end',
-          isBeforePageStart && 'cm-superscript-before-page-start',
-        ),
-      })
-
-      decorations.push({ from: lFrom, to: lFrom, decoration })
+      decoration && decorations.push({ from: lFrom, to: lFrom, decoration })
 
       if (!token) {
         pos = lTo + 1
@@ -156,11 +155,22 @@ export const buildDecorations = (view: EditorView, settings: SuperscriptPluginSe
       const lastChar = lText[line.length - 1]
 
       switch (token) {
-        case tokenNames.action:
+        case tokenNames.action:{
+          const cursor = view.state.field(editorInfoField).editor?.getCursor()
+
           if (firstChar === '!' && lText.substring(0, 3) !== '![[') {
             markDeco(lFrom, lFrom + 1, composeClass(token))
           }
+
+          if (cursor?.line === line.number - 1 && cursor.ch === 2 && lText.toLowerCase() === 'pp') {
+            decorations.push({ from: lTo, to: lTo, decoration: Decoration.widget({ widget: new ShortcutTipWidget('page') }) })
+          }
+          else if (cursor?.line === line.number - 1 && cursor.ch === 1 && lText.toLowerCase() === 'p') {
+            decorations.push({ from: lTo, to: lTo, decoration: Decoration.widget({ widget: new ShortcutTipWidget('panel') }) })
+          }
+
           break
+        }
         case tokenNames.character: {
           state = create(state, (draft) => {
             draft.characters.push({ from: lFrom, to: lTo, wordCount: 0 })

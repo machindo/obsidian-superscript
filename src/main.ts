@@ -4,6 +4,7 @@ import { autonumberHeadings } from './editor/autonumberHeadings'
 import { createSuperscriptViewPlugin } from './editor/createSuperscriptViewPlugin'
 import { SuperscriptPluginSettings } from './settings/SuperscriptPluginSettings'
 import { SuperscriptSettingsTab } from './settings/SuperscriptSettingsTab'
+import { applyShortcuts } from './shortcuts/applyShortcuts'
 
 const DEFAULT_SETTINGS: SuperscriptPluginSettings = {
   displayPageIcons: true,
@@ -24,6 +25,9 @@ export default class SuperscriptPlugin extends Plugin {
 
     // Settings
     this.addSettingTab(new SuperscriptSettingsTab(this.app, this))
+
+    // Shortcuts
+    this.registerDomEvent(document, 'keydown', applyShortcuts(this))
   }
 
   onunload() {
