@@ -9,4 +9,5 @@ export type SuperscriptState = {
   pageHeadings: HeadingInfo[]
   panelHeadings: HeadingInfo[]
   inDialogue: boolean
+  inPage: boolean
 }

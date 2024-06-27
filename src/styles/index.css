@@ -2,7 +2,13 @@
   text-transform: uppercase;
   font-size: var(--h2-size);
   font-weight: bold;
+}
 
+.cm-superscript-before-page-start {
+  height: calc(var(--line-height-normal) * 1lh + var(--size-4-6));
+}
+
+.cm-superscript-page-start {
   &::before {
     content: '';
     position: absolute;
@@ -12,45 +18,39 @@
     border-start-start-radius: var(--radius-s);
     border-start-end-radius: var(--radius-s);
   }
+}
 
-  &~:not(&)::before {
+.cm-superscript-page-body {
+  &::before {
     content: '';
     position: absolute;
     inset: 0 calc(var(--size-4-4) * -1);
     border-inline: solid var(--border-width) var(--background-modifier-border);
   }
+}
 
-  :has(+ &) {
-    height: calc(var(--line-height-normal) * 1lh + var(--size-4-2));
-  }
+.cm-superscript-page-end {
+  height: calc(var(--line-height-normal) * 1lh + var(--size-4-4));
 
-  &~:has(+ &),
-  &~:last-child {
-    height: calc(var(--line-height-normal) * 1lh + var(--size-4-1));
-
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0 calc(var(--size-4-4) * -1) var(--size-4-4);
-      height: var(--line-height-normal)px;
-      border-inline: solid var(--border-width) var(--background-modifier-border);
-      border-block-end: solid var(--border-width) var(--background-modifier-border);
-      border-end-start-radius: var(--radius-s);
-      border-end-end-radius: var(--radius-s);
-    }
-  }
-
-  &~:not(&):has(+ &),
-  &~:not(&):last-child {
-    height: calc(var(--line-height-normal) * 1lh + var(--size-4-4));
-  }
-
-  &~&:has(+ &)::before,
-  &~:last-child::before {
-    inset: calc(var(--size-4-2) * -1) calc(var(--size-4-4) * -1) var(--size-4-4);
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0 calc(var(--size-4-4) * -1) var(--size-4-4);
+    height: var(--line-height-normal)px;
+    border-inline: solid var(--border-width) var(--background-modifier-border);
+    border-block-end: solid var(--border-width) var(--background-modifier-border);
+    border-end-start-radius: var(--radius-s);
+    border-end-end-radius: var(--radius-s);
   }
 }
 
+.cm-superscript-page-start.cm-superscript-page-end {
+  height: calc(var(--line-height-normal) * 1lh + var(--size-4-1));
+
+  &::before {
+    inset: calc(var(--size-4-2) * -1) calc(var(--size-4-4) * -1) var(--size-4-4);
+  }
+}
 
 .cm-superscript-page-heading-parity {
   position: absolute;

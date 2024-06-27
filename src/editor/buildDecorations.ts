@@ -1,16 +1,21 @@
 import { RangeSetBuilder } from '@codemirror/state'
 import { Decoration, DecorationSet, EditorView } from '@codemirror/view'
 import { A, D } from '@mobily/ts-belt'
+import { clsx } from 'clsx/lite'
 import { create } from 'mutative'
 import { editorInfoField } from 'obsidian'
 import { PageHeadingParityWidget } from './PageHeadingParityWidget'
 import { SuperscriptContext } from './SuperscriptContext'
 import { SuperscriptState } from './SuperscriptState'
 import { WordCountWidget } from './WordCountWidget'
+import { getDirection } from './getDirection'
 import { getOddPageSide } from './getOddPageSide'
 import { isSuperscriptEnabled } from './isSuperscriptEnabled'
-import { TokenName, lineTokens, tokenNames } from './tokens'
-import { getDirection } from './getDirection'
+import { TokenName, lineTokens, pageHeadingToken, tokenNames } from './tokens'
+
+const mdPageHeadingLevelRegex = /^#{1,2} /
+
+const pageHeadingLevelRegex = RegExp(`${mdPageHeadingLevelRegex.source}|${pageHeadingToken.regex.source}`, 'i')
 
 const composeClass = (token: string) => `cm-formatting cm-superscript-formatting-${token}`
 
@@ -29,6 +34,12 @@ const getLineFormat = (
   matches?: RegExpExecArray
   state: SuperscriptState
 } => {
+  if (mdPageHeadingLevelRegex.test(line)) {
+    state = create(state, (draft) => {
+      draft.inPage = false
+    })
+  }
+
   if (line.trim() === '') {
     // at least two spaces to be considered
     // https://fountain.io/syntax#line-breaks
@@ -89,6 +100,7 @@ export const buildDecorations = (view: EditorView): DecorationSet => {
 
   let state: SuperscriptState = {
     inDialogue: false,
+    inPage: false,
     pageHeadings: [],
     panelHeadings: [],
     characters: [],
@@ -112,14 +124,25 @@ export const buildDecorations = (view: EditorView): DecorationSet => {
 
       state = nextState
 
+      const isPageEnd = state.inPage && (lTo >= to || pageHeadingLevelRegex.test(view.state.doc.lineAt(lTo + 1).text))
+      const isBeforePageStart = !state.inPage && lTo < to && pageHeadingToken.regex.test(view.state.doc.lineAt(lTo + 1).text)
+
+      const decoration = Decoration.line({
+        class: clsx(
+          token && `cm-superscript-${token}`,
+          token === 'page-heading' && 'cm-superscript-page-start',
+          state.inPage && token !== 'page-heading' && 'cm-superscript-page-body',
+          isPageEnd && 'cm-superscript-page-end',
+          isBeforePageStart && 'cm-superscript-before-page-start',
+        ),
+      })
+
+      decorations.push({ from: lFrom, to: lFrom, decoration })
+
       if (!token) {
         pos = lTo + 1
         continue
       }
-
-      const decoration = Decoration.line({ class: 'cm-superscript-' + token })
-
-      decorations.push({ from: lFrom, to: lFrom, decoration })
 
       // Mark Decorations
       const firstChar = lText[0]
@@ -158,6 +181,7 @@ export const buildDecorations = (view: EditorView): DecorationSet => {
         case tokenNames.pageHeading: {
           state = create(state, (draft) => {
             draft.pageHeadings.push({ from: lFrom, to: lTo, wordCount: 0 })
+            draft.inPage = true
           })
 
           if (!matches) break
