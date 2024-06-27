@@ -5,8 +5,10 @@ export const isSuperscriptEnabled = ({ app, file }: { app: App, file: TFile | nu
 
   if (file) {
     const fileCache = app.metadataCache.getFileCache(file)
-    const cssClasses = fileCache?.frontmatter?.cssclasses ?? []
+    const lang = fileCache?.frontmatter?.lang ?? ''
+    const langs = fileCache?.frontmatter?.langs ?? []
 
-    return cssClasses.includes('superscript')
+    return lang === 'superscript'
+      || (Array.isArray(langs) && langs.includes('superscript'))
   }
 }

@@ -4,6 +4,7 @@ import { A, D } from '@mobily/ts-belt'
 import { clsx } from 'clsx/lite'
 import { create } from 'mutative'
 import { editorInfoField } from 'obsidian'
+import { SuperscriptPluginSettings } from '../settings/SuperscriptPluginSettings'
 import { PageHeadingParityWidget } from './PageHeadingParityWidget'
 import { SuperscriptContext } from './SuperscriptContext'
 import { SuperscriptState } from './SuperscriptState'
@@ -87,7 +88,7 @@ const getLineFormat = (
   return { token: tokenNames.action, state }
 }
 
-export const buildDecorations = (view: EditorView): DecorationSet => {
+export const buildDecorations = (view: EditorView, settings: SuperscriptPluginSettings): DecorationSet => {
   const builder = new RangeSetBuilder<Decoration>()
   const info = view.state.field(editorInfoField)
   const decorations: { from: number, to: number, decoration: Decoration }[] = []
@@ -190,6 +191,7 @@ export const buildDecorations = (view: EditorView): DecorationSet => {
           })
 
           if (!matches) break
+          if (!settings.displayPageIcons) break
 
           const pageNumber = parseInt(matches[2])
           const additionalPageCount = matches[3] ? parseInt(matches[3]) - parseInt(matches[2]) : 0
@@ -222,22 +224,24 @@ export const buildDecorations = (view: EditorView): DecorationSet => {
 
   // TODO: continue word counting for each orphaned heading
 
-  for (const pageHeading of state.pageHeadings) {
-    const decoration = Decoration.widget({ widget: new WordCountWidget(pageHeading.wordCount) })
+  if (settings.displayWordCount) {
+    for (const pageHeading of state.pageHeadings) {
+      const decoration = Decoration.widget({ widget: new WordCountWidget(pageHeading.wordCount) })
 
-    decorations.push({ from: pageHeading.to, to: pageHeading.to, decoration })
-  }
+      decorations.push({ from: pageHeading.to, to: pageHeading.to, decoration })
+    }
 
-  for (const panelHeading of state.panelHeadings) {
-    const decoration = Decoration.widget({ widget: new WordCountWidget(panelHeading.wordCount) })
+    for (const panelHeading of state.panelHeadings) {
+      const decoration = Decoration.widget({ widget: new WordCountWidget(panelHeading.wordCount) })
 
-    decorations.push({ from: panelHeading.to, to: panelHeading.to, decoration })
-  }
+      decorations.push({ from: panelHeading.to, to: panelHeading.to, decoration })
+    }
 
-  for (const character of state.characters) {
-    const decoration = Decoration.widget({ widget: new WordCountWidget(character.wordCount) })
+    for (const character of state.characters) {
+      const decoration = Decoration.widget({ widget: new WordCountWidget(character.wordCount) })
 
-    decorations.push({ from: character.to, to: character.to, decoration })
+      decorations.push({ from: character.to, to: character.to, decoration })
+    }
   }
 
   const sortedDecorations = A.sortBy(decorations, D.get('from'))

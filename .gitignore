@@ -134,3 +134,6 @@ dist
 /main.js.map
 /styles.css
 /styles.css.map
+
+# Obsidian settings
+data.json
