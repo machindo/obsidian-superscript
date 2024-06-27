@@ -54,9 +54,11 @@ const getLineFormat = (
         if (ctx.afterEmptyLine && !ctx.beforeEmptyLine && !ctx.isLastLine) {
           return { matches, token, state: { ...state, inDialogue: true } }
         }
-        else {
-          break
-        }
+
+        break
+      }
+      if (token === tokenNames.pageHeading) {
+        return { matches, token, state: { ...state, inPage: true } }
       }
 
       return { matches, token, state }
@@ -127,6 +129,10 @@ export const buildDecorations = (view: EditorView): DecorationSet => {
       const isPageEnd = state.inPage && (lTo >= to || pageHeadingLevelRegex.test(view.state.doc.lineAt(lTo + 1).text))
       const isBeforePageStart = !state.inPage && lTo < to && pageHeadingToken.regex.test(view.state.doc.lineAt(lTo + 1).text)
 
+      if (lText.toLocaleLowerCase() === 'page 10') {
+        console.log(state)
+      }
+
       const decoration = Decoration.line({
         class: clsx(
           token && `cm-superscript-${token}`,
@@ -181,7 +187,6 @@ export const buildDecorations = (view: EditorView): DecorationSet => {
         case tokenNames.pageHeading: {
           state = create(state, (draft) => {
             draft.pageHeadings.push({ from: lFrom, to: lTo, wordCount: 0 })
-            draft.inPage = true
           })
 
           if (!matches) break
