@@ -10,12 +10,12 @@ export type TokenName = typeof tokenNames[keyof typeof tokenNames]
 
 export const pageHeadingToken = {
   id: tokenNames.pageHeading,
-  regex: /^(PAGE) (\d+)(?:-(\d+))?$/i,
+  regex: /^(?<pageKeyword>PAGE) (?<pageStart>\d+)(?:-|-(?<pageEnd>\d+))?(?<pageDot>\.)?$/i,
 } as const
 
 export const panelHeadingToken = {
   id: tokenNames.panelHeading,
-  regex: /^(Panel) (\d+)(?:-(\d+))?$/i,
+  regex: /^(?<panelKeyword>Panel) (?<panelStart>\d+)(?:-|-(?<panelEnd>\d+))?(?<panelDot>\.)?$/i,
 } as const
 
 export const lineTokens = [

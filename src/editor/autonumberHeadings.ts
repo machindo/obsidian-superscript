@@ -9,48 +9,43 @@ export const autonumberHeadings = (editor: Editor, info: MarkdownFileInfo | Mark
   let panelNumber = 0
 
   for (let line = 0; line < editor.lastLine(); line++) {
+    const cursorOnCurrentLine = editor.getCursor().line === line
     const text = editor.getLine(line)
-    const pageHeadingMatches = pageHeadingToken.regex.exec(text)
-    const panelHeadingMatches = panelHeadingToken.regex.exec(text)
+    const { pageKeyword, pageStart, pageEnd, pageDot } = pageHeadingToken.regex.exec(text)?.groups ?? {}
+    const { panelKeyword, panelStart, panelEnd, panelDot } = panelHeadingToken.regex.exec(text)?.groups ?? {}
 
-    if (pageHeadingMatches) {
-      pageNumber++
+    if (pageStart) {
+      const pageStartNumber = parseInt(pageStart)
+      const pageEndNumber = parseInt(pageEnd ?? pageStart)
+      const additionalPageCount = pageEndNumber - pageStartNumber
+      const expectedPageNumber = pageDot ? pageStartNumber : (pageNumber + 1)
+
+      if (!cursorOnCurrentLine && (pageStartNumber !== expectedPageNumber || (!additionalPageCount && text.includes('-')))) {
+        editor.replaceRange(
+          additionalPageCount ? `${expectedPageNumber}-${expectedPageNumber + additionalPageCount}` : `${expectedPageNumber}`,
+          { line, ch: pageKeyword.length + 1 },
+          { line, ch: text.length },
+        )
+      }
+
+      pageNumber = cursorOnCurrentLine ? pageEndNumber : expectedPageNumber + additionalPageCount
       panelNumber = 0
-
-      const matchingPageNumberStart = parseInt(pageHeadingMatches[2])
-      const matchingPageNumberEnd = parseInt(pageHeadingMatches[3] ?? pageHeadingMatches[2])
-      const additionalPageCount = matchingPageNumberEnd - matchingPageNumberStart
-
-      if (matchingPageNumberStart !== pageNumber) {
-        editor.replaceRange(
-          additionalPageCount ? `${pageNumber}-${pageNumber + additionalPageCount}` : `${pageNumber}`,
-          { line, ch: pageHeadingMatches[1].length + 1 },
-          { line, ch: text.length },
-        )
-      }
-
-      if (additionalPageCount) {
-        pageNumber += additionalPageCount
-      }
     }
-    else if (panelHeadingMatches) {
-      panelNumber++
+    else if (panelStart) {
+      const panelStartNumber = parseInt(panelStart)
+      const panelEndNumber = parseInt(panelEnd ?? panelStart)
+      const additionalPanelCount = panelEndNumber - panelStartNumber
+      const expectedPanelNumber = panelDot ? panelStartNumber : (panelNumber + 1)
 
-      const matchingPanelNumberStart = parseInt(panelHeadingMatches[2])
-      const matchingPanelNumberEnd = parseInt(panelHeadingMatches[3] ?? panelHeadingMatches[2])
-      const additionalPanelCount = matchingPanelNumberEnd - matchingPanelNumberStart
-
-      if (matchingPanelNumberStart !== panelNumber) {
+      if (!cursorOnCurrentLine && (panelStartNumber !== expectedPanelNumber || (!additionalPanelCount && text.includes('-')))) {
         editor.replaceRange(
-          additionalPanelCount ? `${panelNumber}-${panelNumber + additionalPanelCount}` : `${panelNumber}`,
-          { line, ch: panelHeadingMatches[1].length + 1 },
+          additionalPanelCount ? `${expectedPanelNumber}-${expectedPanelNumber + additionalPanelCount}` : `${expectedPanelNumber}`,
+          { line, ch: panelKeyword.length + 1 },
           { line, ch: text.length },
         )
       }
 
-      if (additionalPanelCount) {
-        panelNumber += additionalPanelCount
-      }
+      panelNumber = cursorOnCurrentLine ? panelEndNumber : expectedPanelNumber + additionalPanelCount
     }
   }
 }
