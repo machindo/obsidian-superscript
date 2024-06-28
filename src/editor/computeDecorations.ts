@@ -1,6 +1,5 @@
-import { RangeSetBuilder } from '@codemirror/state'
-import { Decoration, DecorationSet, EditorView } from '@codemirror/view'
-import { A, D } from '@mobily/ts-belt'
+import { Decoration, EditorView } from '@codemirror/view'
+import { A, D, F } from '@mobily/ts-belt'
 import { clsx } from 'clsx/lite'
 import { create } from 'mutative'
 import { editorInfoField } from 'obsidian'
@@ -13,7 +12,6 @@ import { getDirection } from './getDirection'
 import { getOddPageSide } from './getOddPageSide'
 import { isSuperscriptEnabled } from './isSuperscriptEnabled'
 import { TokenName, lineTokens, pageHeadingToken, tokenNames } from './tokens'
-import { ShortcutTipWidget } from './ShortcutTipWidget'
 
 const mdPageHeadingLevelRegex = /^#{1,2} /
 
@@ -89,18 +87,12 @@ const getLineFormat = (
   return { token: tokenNames.action, state }
 }
 
-export const buildDecorations = (view: EditorView, settings: SuperscriptPluginSettings): DecorationSet => {
-  const builder = new RangeSetBuilder<Decoration>()
-  const info = view.state.field(editorInfoField)
-  const decorations: { from: number, to: number, decoration: Decoration }[] = []
+type DecorationSpec = { from: number, to: number, decoration: Decoration }
 
-  if (!isSuperscriptEnabled(info)) return builder.finish()
+export const computeDecorations = (view: EditorView, settings: SuperscriptPluginSettings): DecorationSpec[] => {
+  if (!isSuperscriptEnabled(view.state.field(editorInfoField))) return []
 
-  const markDeco = (start: number, end: number, className: string) => {
-    const decoration = Decoration.mark({ class: className })
-
-    decorations.push({ from: start, to: end, decoration })
-  }
+  const decorations: DecorationSpec[] = []
 
   let state: SuperscriptState = {
     inDialogue: false,
@@ -156,17 +148,8 @@ export const buildDecorations = (view: EditorView, settings: SuperscriptPluginSe
 
       switch (token) {
         case tokenNames.action:{
-          const cursor = view.state.field(editorInfoField).editor?.getCursor()
-
           if (firstChar === '!' && lText.substring(0, 3) !== '![[') {
-            markDeco(lFrom, lFrom + 1, composeClass(token))
-          }
-
-          if (cursor?.line === line.number - 1 && cursor.ch === 2 && lText.toLowerCase() === 'pp') {
-            decorations.push({ from: lTo, to: lTo, decoration: Decoration.widget({ widget: new ShortcutTipWidget('page') }) })
-          }
-          else if (cursor?.line === line.number - 1 && cursor.ch === 1 && lText.toLowerCase() === 'p') {
-            decorations.push({ from: lTo, to: lTo, decoration: Decoration.widget({ widget: new ShortcutTipWidget('panel') }) })
+            decorations.push({ from: lFrom, to: lFrom + 1, decoration: Decoration.mark({ class: composeClass(token) }) })
           }
 
           break
@@ -177,7 +160,7 @@ export const buildDecorations = (view: EditorView, settings: SuperscriptPluginSe
           })
 
           if (firstChar === '@') {
-            markDeco(lFrom, lFrom + 1, composeClass(token))
+            decorations.push({ from: lFrom, to: lFrom + 1, decoration: Decoration.mark({ class: composeClass(token) }) })
           }
 
           if (lastChar === ')') {
@@ -191,7 +174,7 @@ export const buildDecorations = (view: EditorView, settings: SuperscriptPluginSe
             const charExtLength = charExt[0].length
             const charExtStart = lTo - charExtLength
 
-            markDeco(charExtStart, lTo, 'cm-superscript-character-extension')
+            decorations.push({ from: charExtStart, to: lTo, decoration: Decoration.mark({ class: 'cm-superscript-character-extension' }) })
           }
           break
         }
@@ -254,11 +237,5 @@ export const buildDecorations = (view: EditorView, settings: SuperscriptPluginSe
     }
   }
 
-  const sortedDecorations = A.sortBy(decorations, D.get('from'))
-
-  for (const { from, to, decoration } of sortedDecorations) {
-    builder.add(from, to, decoration)
-  }
-
-  return builder.finish()
+  return F.toMutable(A.sortBy(decorations, D.get('from')))
 }

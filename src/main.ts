@@ -4,7 +4,7 @@ import { autonumberHeadings } from './editor/autonumberHeadings'
 import { createSuperscriptViewPlugin } from './editor/createSuperscriptViewPlugin'
 import { SuperscriptPluginSettings } from './settings/SuperscriptPluginSettings'
 import { SuperscriptSettingsTab } from './settings/SuperscriptSettingsTab'
-import { applyShortcuts } from './shortcuts/applyShortcuts'
+import { SuperscriptSuggest } from './suggestions/SuperscriptSuggest'
 
 const DEFAULT_SETTINGS: SuperscriptPluginSettings = {
   displayPageIcons: true,
@@ -17,17 +17,16 @@ export default class SuperscriptPlugin extends Plugin {
   async onload() {
     this.loadSettings()
 
-    // Formatting
-    this.registerEditorExtension(Prec.lowest(createSuperscriptViewPlugin(this)))
-
-    // Autonumbering
-    this.registerEvent(this.app.workspace.on('editor-change', autonumberHeadings))
-
     // Settings
     this.addSettingTab(new SuperscriptSettingsTab(this.app, this))
 
-    // Shortcuts
-    this.registerDomEvent(document, 'keydown', applyShortcuts(this))
+    // Formatting
+    this.registerEditorExtension(Prec.lowest(createSuperscriptViewPlugin(this)))
+
+    this.registerEditorSuggest(new SuperscriptSuggest(this.app))
+
+    // Autonumbering
+    this.registerEvent(this.app.workspace.on('editor-change', autonumberHeadings))
   }
 
   onunload() {

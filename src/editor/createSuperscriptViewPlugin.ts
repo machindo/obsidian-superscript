@@ -1,9 +1,22 @@
-import { DecorationSet, EditorView, PluginSpec, PluginValue, ViewPlugin, ViewUpdate } from '@codemirror/view'
+import { RangeSetBuilder } from '@codemirror/state'
+import { Decoration, DecorationSet, EditorView, PluginSpec, PluginValue, ViewPlugin, ViewUpdate } from '@codemirror/view'
 import SuperscriptPlugin from '../main'
-import { buildDecorations } from './buildDecorations'
+import { SuperscriptPluginSettings } from '../settings/SuperscriptPluginSettings'
+import { computeDecorations } from './computeDecorations'
 
 type SuperscriptPluginValue = PluginValue & {
   decorations: DecorationSet
+}
+
+const buildDecorations = (view: EditorView, settings: SuperscriptPluginSettings) => {
+  const builder = new RangeSetBuilder<Decoration>()
+  const decorations = computeDecorations(view, settings)
+
+  for (const { from, to, decoration } of decorations) {
+    builder.add(from, to, decoration)
+  }
+
+  return builder.finish()
 }
 
 const createSuperscriptPluginValue = (plugin: SuperscriptPlugin) =>

@@ -128,12 +128,3 @@
   color: var(--text-faint);
   pointer-events: none;
 }
-
-/* Shortcut tip widget */
-
-.cm-superscript-shortcut-tip {
-  position: absolute;
-  padding-inline-start: 2ch;
-  color: var(--text-faint);
-  pointer-events: none;
-}
