@@ -1,6 +1,6 @@
-# Obsidian Superscript
+# Obsidian Superscript Plugin
 
-[Obsidian](https://obsidian.md/) plugin for [Superscript](https://superscript.app/) comic book script syntax.
+[Superscript](https://superscript.app/) comic book script syntax plugin for [Obsidian](https://obsidian.md/).
 
 ## Features
 
