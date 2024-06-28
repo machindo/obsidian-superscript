@@ -1,0 +1,12 @@
+.reading-superscript-page-heading {
+  text-transform: uppercase;
+  page-break-before: always;
+}
+
+.reading-superscript-panel-heading {
+  text-transform: lowercase;
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
+}

@@ -2,6 +2,7 @@ import { Prec } from '@codemirror/state'
 import { Plugin } from 'obsidian'
 import { renumberHeadings } from './autocorrect/renumberHeadings'
 import { createDecorationViewPlugin } from './decorations/createDecorationViewPlugin'
+import { markdownPostProcessor } from './preview/markdownPostProcessor'
 import { SuperscriptPluginSettings } from './settings/SuperscriptPluginSettings'
 import { SuperscriptSettingsTab } from './settings/SuperscriptSettingsTab'
 import { SuperscriptSuggest } from './suggestions/SuperscriptSuggest'
@@ -39,6 +40,9 @@ export default class SuperscriptPlugin extends Plugin {
 
       renumberHeadings(this.app.workspace.activeEditor?.editor, this.app.workspace.activeEditor)
     })
+
+    // Reading view
+    this.registerMarkdownPostProcessor(markdownPostProcessor)
   }
 
   onunload() {

@@ -3,89 +3,19 @@ import { A, D, F } from '@mobily/ts-belt'
 import { clsx } from 'clsx/lite'
 import { create } from 'mutative'
 import { editorInfoField } from 'obsidian'
+import { pageHeadingToken, tokenNames } from '../config/tokens'
 import { SuperscriptPluginSettings } from '../settings/SuperscriptPluginSettings'
+import { SuperscriptState } from '../styling/SuperscriptState'
+import { getLineFormat } from '../styling/getLineFormat'
+import { isSuperscriptEnabled } from '../utils/isSuperscriptEnabled'
 import { PageHeadingParityWidget } from './PageHeadingParityWidget'
-import { SuperscriptContext } from './SuperscriptContext'
-import { SuperscriptState } from './SuperscriptState'
 import { WordCountWidget } from './WordCountWidget'
 import { getDirection } from './getDirection'
 import { getOddPageSide } from './getOddPageSide'
-import { isSuperscriptEnabled } from '../utils/isSuperscriptEnabled'
-import { TokenName, lineTokens, pageHeadingToken, tokenNames } from '../config/tokens'
 
-const mdPageHeadingLevelRegex = /^#{1,2} /
-
-const pageHeadingLevelRegex = RegExp(`${mdPageHeadingLevelRegex.source}|${pageHeadingToken.regex.source}`, 'i')
+const pageHeadingLevelRegex = RegExp(`^#{1,2} |${pageHeadingToken.regex.source}`, 'i')
 
 const composeClass = (token: string) => `cm-formatting cm-superscript-formatting-${token}`
-
-const countWords = (text: string) => {
-  const words = text.match(/\S+/g)
-
-  return words?.length ?? 0
-}
-
-const getLineFormat = (
-  line: string,
-  state: SuperscriptState,
-  ctx: SuperscriptContext,
-): {
-  token?: TokenName
-  matches?: RegExpExecArray
-  state: SuperscriptState
-} => {
-  if (mdPageHeadingLevelRegex.test(line)) {
-    state = create(state, (draft) => {
-      draft.inPage = false
-    })
-  }
-
-  if (line.trim() === '') {
-    // at least two spaces to be considered
-    // https://fountain.io/syntax#line-breaks
-    return line.length < 2 ? { state: { ...state, inDialogue: false } } : { state }
-  }
-
-  for (const { id: token, regex: tRegex } of lineTokens) {
-    const matches = tRegex.exec(line)
-
-    if (matches) {
-      if (token === tokenNames.character) {
-        if (ctx.afterEmptyLine && !ctx.beforeEmptyLine && !ctx.isLastLine) {
-          return { matches, token, state: { ...state, inDialogue: true } }
-        }
-
-        break
-      }
-      if (token === tokenNames.pageHeading) {
-        return { matches, token, state: { ...state, inPage: true } }
-      }
-
-      return { matches, token, state }
-    }
-  }
-
-  if (state.inDialogue) {
-    return {
-      token: tokenNames.dialogue,
-      state: create(state, (draft) => {
-        if (draft.characters.length > 0) {
-          draft.characters[draft.characters.length - 1].wordCount += countWords(line)
-        }
-
-        if (draft.panelHeadings.length > 0) {
-          draft.panelHeadings[draft.panelHeadings.length - 1].wordCount += countWords(line)
-        }
-
-        if (draft.pageHeadings.length > 0) {
-          draft.pageHeadings[draft.pageHeadings.length - 1].wordCount += countWords(line)
-        }
-      }),
-    }
-  }
-
-  return { token: tokenNames.action, state }
-}
 
 type DecorationSpec = { from: number, to: number, decoration: Decoration }
 
