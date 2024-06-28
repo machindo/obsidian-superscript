@@ -10,8 +10,8 @@ import { SuperscriptState } from './SuperscriptState'
 import { WordCountWidget } from './WordCountWidget'
 import { getDirection } from './getDirection'
 import { getOddPageSide } from './getOddPageSide'
-import { isSuperscriptEnabled } from './isSuperscriptEnabled'
-import { TokenName, lineTokens, pageHeadingToken, tokenNames } from './tokens'
+import { isSuperscriptEnabled } from '../utils/isSuperscriptEnabled'
+import { TokenName, lineTokens, pageHeadingToken, tokenNames } from '../config/tokens'
 
 const mdPageHeadingLevelRegex = /^#{1,2} /
 

@@ -4,7 +4,7 @@ import SuperscriptPlugin from '../main'
 import { SuperscriptPluginSettings } from '../settings/SuperscriptPluginSettings'
 import { computeDecorations } from './computeDecorations'
 
-type SuperscriptPluginValue = PluginValue & {
+type DecorationPluginValue = PluginValue & {
   decorations: DecorationSet
 }
 
@@ -19,9 +19,9 @@ const buildDecorations = (view: EditorView, settings: SuperscriptPluginSettings)
   return builder.finish()
 }
 
-const createSuperscriptPluginValue = (plugin: SuperscriptPlugin) =>
+const createDecorationPluginValue = (plugin: SuperscriptPlugin) =>
   (view: EditorView) => {
-    const pluginValue: SuperscriptPluginValue = {
+    const pluginValue: DecorationPluginValue = {
       decorations: buildDecorations(view, plugin.settings),
       update: (update: ViewUpdate) => {
         if (update.docChanged || update.viewportChanged || update.selectionSet) {
@@ -33,9 +33,9 @@ const createSuperscriptPluginValue = (plugin: SuperscriptPlugin) =>
     return pluginValue
   }
 
-const pluginSpec: PluginSpec<SuperscriptPluginValue> = {
-  decorations: (value: SuperscriptPluginValue) => value.decorations,
+const pluginSpec: PluginSpec<DecorationPluginValue> = {
+  decorations: (value: DecorationPluginValue) => value.decorations,
 }
 
-export const createSuperscriptViewPlugin = (plugin: SuperscriptPlugin) =>
-  ViewPlugin.define(createSuperscriptPluginValue(plugin), pluginSpec)
+export const createDecorationViewPlugin = (plugin: SuperscriptPlugin) =>
+  ViewPlugin.define(createDecorationPluginValue(plugin), pluginSpec)

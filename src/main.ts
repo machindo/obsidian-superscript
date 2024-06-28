@@ -1,7 +1,7 @@
 import { Prec } from '@codemirror/state'
 import { Plugin } from 'obsidian'
-import { autonumberHeadings } from './editor/autonumberHeadings'
-import { createSuperscriptViewPlugin } from './editor/createSuperscriptViewPlugin'
+import { renumberHeadings } from './autocorrect/renumberHeadings'
+import { createDecorationViewPlugin } from './decorations/createDecorationViewPlugin'
 import { SuperscriptPluginSettings } from './settings/SuperscriptPluginSettings'
 import { SuperscriptSettingsTab } from './settings/SuperscriptSettingsTab'
 import { SuperscriptSuggest } from './suggestions/SuperscriptSuggest'
@@ -21,12 +21,24 @@ export default class SuperscriptPlugin extends Plugin {
     this.addSettingTab(new SuperscriptSettingsTab(this.app, this))
 
     // Formatting
-    this.registerEditorExtension(Prec.lowest(createSuperscriptViewPlugin(this)))
+    this.registerEditorExtension(Prec.lowest(createDecorationViewPlugin(this)))
 
+    // Suggestions
     this.registerEditorSuggest(new SuperscriptSuggest(this.app))
 
-    // Autonumbering
-    this.registerEvent(this.app.workspace.on('editor-change', autonumberHeadings))
+    // Header renumbering
+    this.addCommand({
+      id: 'superscript-autonumber-headings',
+      name: 'Fix heading numbers',
+      editorCallback: renumberHeadings,
+    })
+    this.registerDomEvent(this.app.workspace.containerEl, 'keyup', (event) => {
+      if (!this.app.workspace.activeEditor?.editor) return
+
+      if (event.key.length > 1 && !['Backspace', 'Delete', 'Enter'].includes(event.key)) return
+
+      renumberHeadings(this.app.workspace.activeEditor?.editor, this.app.workspace.activeEditor)
+    })
   }
 
   onunload() {
@@ -37,8 +49,8 @@ export default class SuperscriptPlugin extends Plugin {
     this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData())
   }
 
-  async saveSettings() {
+  saveSettings() {
     this.loadData
-    await this.saveData(this.settings)
+    return this.saveData(this.settings)
   }
 }
