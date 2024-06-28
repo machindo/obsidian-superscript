@@ -1,5 +1,6 @@
 import { App, Editor, EditorPosition, EditorSuggest, EditorSuggestContext, EditorSuggestTriggerInfo } from 'obsidian'
 import { pageHeadingToken, panelHeadingToken } from '../config/tokens'
+import { isSuperscriptEnabled } from '../utils/isSuperscriptEnabled'
 
 type SuperscriptSuggestion = {
   description: string
@@ -35,6 +36,8 @@ export class SuperscriptSuggest extends EditorSuggest<SuperscriptSuggestion> {
   }
 
   onTrigger(cursor: EditorPosition, editor: Editor): EditorSuggestTriggerInfo | null {
+    if (!this.app.workspace.activeEditor || !isSuperscriptEnabled(this.app.workspace.activeEditor)) return null
+
     const line = editor.getLine(cursor.line)
     const matches = /^(?:pa?g?e? ?|pa?n?e?l? ?)$/i.exec(line)
 
@@ -45,14 +48,6 @@ export class SuperscriptSuggest extends EditorSuggest<SuperscriptSuggestion> {
         query: line,
       }
       : null
-  }
-
-  renderSuggestion(value: SuperscriptSuggestion, el: HTMLElement): void {
-    el.createSpan({ text: value.description })
-  }
-
-  selectSuggestion(value: SuperscriptSuggestion): void {
-    this.context?.editor.replaceRange(value.replacement, this.context.start, this.context.end)
   }
 
   getSuggestions(context: EditorSuggestContext) {
@@ -72,5 +67,13 @@ export class SuperscriptSuggest extends EditorSuggest<SuperscriptSuggestion> {
     }
 
     return suggestions
+  }
+
+  renderSuggestion(value: SuperscriptSuggestion, el: HTMLElement): void {
+    el.createSpan({ text: value.description })
+  }
+
+  selectSuggestion(value: SuperscriptSuggestion): void {
+    this.context?.editor.replaceRange(value.replacement, this.context.start, this.context.end)
   }
 }

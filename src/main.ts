@@ -38,11 +38,11 @@ export default class SuperscriptPlugin extends Plugin {
 
       if (event.key.length > 1 && !['Backspace', 'Delete', 'Enter'].includes(event.key)) return
 
-      renumberHeadings(this.app.workspace.activeEditor?.editor, this.app.workspace.activeEditor)
+      renumberHeadings(this.app.workspace.activeEditor.editor, this.app.workspace.activeEditor)
     })
 
     // Reading view
-    this.registerMarkdownPostProcessor(markdownPostProcessor)
+    this.registerMarkdownPostProcessor(markdownPostProcessor(this))
   }
 
   onunload() {

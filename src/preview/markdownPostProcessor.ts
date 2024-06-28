@@ -1,9 +1,13 @@
 import { MarkdownPostProcessor } from 'obsidian'
 import { tokenNames } from '../config/tokens'
+import SuperscriptPlugin from '../main'
 import { SuperscriptState } from '../styling/SuperscriptState'
 import { getLineFormat } from '../styling/getLineFormat'
+import { isSuperscriptEnabled } from '../utils/isSuperscriptEnabled'
 
-export const markdownPostProcessor: MarkdownPostProcessor = (el) => {
+export const markdownPostProcessor = (plugin: SuperscriptPlugin): MarkdownPostProcessor => (el) => {
+  if (!plugin.app.workspace.activeEditor || !isSuperscriptEnabled(plugin.app.workspace.activeEditor)) return
+
   const ctx = {
     afterEmptyLine: true,
     beforeEmptyLine: false,
