@@ -8,6 +8,6 @@ export default defineConfig({
   outDir: '.',
   splitting: false,
   sourcemap: true,
-  clean: false,
+  clean: false, // DO NOT CHANGE EVER! This prevents tsup from deleting all files
   external: ['obsidian', '@codemirror/view', '@codemirror/state'],
 })
