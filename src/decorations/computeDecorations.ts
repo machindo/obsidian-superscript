@@ -1,8 +1,8 @@
 import { Decoration, EditorView } from '@codemirror/view'
-import { A, D, F } from '@mobily/ts-belt'
 import { clsx } from 'clsx/lite'
 import { create } from 'mutative'
 import { editorInfoField } from 'obsidian'
+import { prop, sortBy } from 'remeda'
 import { pageHeadingToken, tokenNames } from '../config/tokens'
 import { SuperscriptPluginSettings } from '../settings/SuperscriptPluginSettings'
 import { SuperscriptState } from '../styling/SuperscriptState'
@@ -167,5 +167,5 @@ export const computeDecorations = (view: EditorView, settings: SuperscriptPlugin
     }
   }
 
-  return F.toMutable(A.sortBy(decorations, D.get('from')))
+  return sortBy(decorations, prop('from'))
 }

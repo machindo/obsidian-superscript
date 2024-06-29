@@ -1,5 +1,5 @@
 import { WidgetType } from '@codemirror/view'
-import { A } from '@mobily/ts-belt'
+import { range } from 'remeda'
 
 type PageHeadingParityWidgetOptions = {
   additionalPageCount: number
@@ -26,7 +26,7 @@ const pagePaths = ({ pageSpan, start }: { pageSpan: number, start: 'left' | 'rig
   const startIndex = start === 'left' ? 0 : 1
   const endIndex = pageSpan + startIndex - 1
 
-  return A.range(0, pagePathCount - 1).map(i =>
+  return range(0, pagePathCount).map(i =>
     pagePath({
       filled: isBetween(i, startIndex, endIndex),
       offset: Math.floor(i / 2),

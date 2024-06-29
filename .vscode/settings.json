@@ -1,4 +1,7 @@
 {
   "eslint.format.enable": true,
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "github-actions.workflows.pinned.workflows": [
+    ".github/workflows/release.yml"
+  ]
 }

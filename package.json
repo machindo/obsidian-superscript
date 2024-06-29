@@ -30,7 +30,6 @@
     "@codemirror/state": "^6.2.1",
     "@codemirror/view": "^6.21.2",
     "@eslint/js": "^8.57.0",
-    "@mobily/ts-belt": "^3.13.1",
     "@stylistic/eslint-plugin": "^2.3.0",
     "@types/codemirror": "^5.60.15",
     "autoprefixer": "^10.4.19",
@@ -43,6 +42,7 @@
     "postcss": "^8.4.38",
     "postcss-import": "^16.1.0",
     "postcss-nested": "^6.0.1",
+    "remeda": "^2.2.1",
     "semantic-release": "^24.0.0",
     "tsup": "^8.1.0",
     "typescript": "^5.5.2",
@@ -50,6 +50,6 @@
     "vitest": "^1.6.0"
   },
   "engines": {
-    "node": "20.x.x"
+    "node": ">=20"
   }
 }
