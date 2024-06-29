@@ -1,6 +1,6 @@
 {
   "name": "obsidian-superscript",
-  "version": "0.1.0",
+  "version": "0.0.0-semantically-released",
   "description": "Superscript comic script plugin for Obsidian",
   "main": "main.js",
   "scripts": {
@@ -43,9 +43,13 @@
     "postcss": "^8.4.38",
     "postcss-import": "^16.1.0",
     "postcss-nested": "^6.0.1",
+    "semantic-release": "^24.0.0",
     "tsup": "^8.1.0",
     "typescript": "^5.5.2",
     "typescript-eslint": "^7.13.1",
     "vitest": "^1.6.0"
+  },
+  "engines": {
+    "node": "18.x.x"
   }
 }

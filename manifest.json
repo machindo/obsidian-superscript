@@ -5,7 +5,7 @@
 	"minAppVersion": "0.15.0",
 	"description": "Superscript comic book script format plugin for Obsidian.",
 	"author": "Justin Paul Silva",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"authorUrl": "https://github.com/machindo",
+	"fundingUrl": "https://github.com/sponsors/machindo",
 	"isDesktopOnly": false
 }
